@@ -1,5 +1,7 @@
 package com.tanishq.jdbc.model;
 
+import java.util.Objects;
+
 public class Book {
     private int id;
 
@@ -12,6 +14,7 @@ public class Book {
     public Book(){
         //no-args constructor
     }
+
     public Book(int id, String name, String author, double price) {
         this.id = id;
         this.name = name;
@@ -51,7 +54,6 @@ public class Book {
         this.price = price;
     }
 
-
     @Override
     public String toString() {
         return "Book{" +
@@ -60,5 +62,21 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id &&
+                Double.compare(book.price, price) == 0 &&
+                Objects.equals(name, book.name) &&
+                Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, author, price);
     }
 }

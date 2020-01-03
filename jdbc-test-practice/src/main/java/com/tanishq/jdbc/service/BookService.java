@@ -30,9 +30,10 @@ public interface BookService {
     /*
 
      */
-    void delete(int id);
+    void delete(int id) throws SQLException;
 
+    /*
 
-
-
+     */
+    void deleteAll();
 }

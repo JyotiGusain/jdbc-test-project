@@ -2,18 +2,15 @@ package com.tanishq.jdbc.service;
 
 import com.tanishq.jdbc.model.Book;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
 
-    private final Connection connection;
+    private final Statement statement;
 
-    public BookServiceImpl(Connection connection){
-        this.connection = connection;
+    public BookServiceImpl(Statement statement){
+        this.statement = statement;
     }
     public void save(Book book) {
 
@@ -24,32 +21,26 @@ public class BookServiceImpl implements BookService {
     }
 
     public Book get(int id) throws SQLException {
-        Book book = null;
         String sqlQuery = "Select * from BOOK where id="+id;
         System.out.println("Sql query to get data: "+sqlQuery);
-        Statement statement = getStatement(this.connection);
         ResultSet resultSet = statement.executeQuery(sqlQuery);
-        while (resultSet.next()) {
-             book = new Book(resultSet.getInt(1) ,  resultSet.getString(2) , resultSet.getString(3) , resultSet.getInt(4));
-        }
-        return book;
+        resultSet.next();
+        return new Book(resultSet.getInt(1) ,  resultSet.getString(2) , resultSet.getString(3) , resultSet.getInt(4));
     }
 
     public List<Book> getAll() {
         return null;
     }
 
-    public void delete(int id) {
+    public void delete(int id) throws SQLException {
+        String query = "delete from book where id="+id;
+        System.out.println("Sql query to delete data: "+query);
+        statement.execute(query);
+        System.out.println("Successfully deleted record for id: "+id);
+    }
+
+    public void deleteAll() {
 
     }
 
-    private Statement getStatement(Connection connection){
-        Statement statement = null;
-        try {
-            statement =  connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return  statement;
-    }
 }

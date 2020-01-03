@@ -7,15 +7,19 @@ import com.tanishq.jdbc.service.BookServiceImpl;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Objects;
 
 public class JdbcOperation {
 
     public static void main(String[] args) throws SQLException {
-        BookService bookService = new BookServiceImpl(getConnection());
+        final Statement statement = getStatement();
+        BookService bookService = new BookServiceImpl(statement);
         int id = 500;
         //1
         System.out.println("Store book");
-        Book tanishqBook = new Book(id, "Taishq Book", "Tanishq", 600.0);
+        Book tanishqBook = new Book(id, "TANISHQ Book", "Tanishq", 600.0);
+        System.out.println(tanishqBook.toString());
         bookService.save(tanishqBook);
 
         //2
@@ -38,25 +42,28 @@ public class JdbcOperation {
         Book book1 = bookService.get(id);
         System.out.println(book1 ==null);
 
+        if(Objects.nonNull(statement)){
+            statement.close();
+        }
 
     }
 
-    private static Connection getConnection() {
-        Connection con = null;
 
+    private static Statement getStatement(){
+        Statement statement = null;
         try {
             Class.forName("org.h2.Driver");
 
             System.out.println("About to create database connection");
-            con = DriverManager.
+           Connection con = DriverManager.
                     getConnection("jdbc:h2:tcp://localhost/./esha;IFEXISTS=TRUE", "sa", "sa");
             System.out.println("database connection created successfully.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            statement =  con.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-        return con;
+        return  statement;
     }
 }
